@@ -1,30 +1,44 @@
 const fs = require("fs");
+const axios = require('axios');
 import Jimp = require("jimp");
 
 // filterImageFromURL
 // helper function to download, filter, and save the filtered image locally
 // returns the absolute path to the local image
 // INPUTS
-//    inputURL: string - a publicly accessible url to an image file
+//    inputURL: string  - a publicly accessible url to an image file
 // RETURNS
 //    an absolute path to a filtered image locally saved file
 export async function filterImageFromURL(inputURL: string): Promise<string> {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const photo = await Jimp.read(inputURL);
-      const outpath =
-        "/tmp/filtered." + Math.floor(Math.random() * 2000) + ".jpg";
-      await photo
-        .resize(256, 256) // resize
-        .quality(60) // set JPEG quality
-        .greyscale() // set greyscale
-        .write(__dirname + outpath, (img) => {
-          resolve(__dirname + outpath);
-        });
-    } catch (error) {
-      reject(error);
-    }
-  });
+  return axios({
+    method: 'get',
+    url: inputURL,
+    responseType: 'arraybuffer'
+    })
+    .then(function ({data: imageBuffer}) {
+      // return jimp.read(imageBuffer)
+      return new Promise(async (resolve, reject) => {
+        try {
+          const photo = await Jimp.read(imageBuffer);
+          const outpath =
+            "/tmp/filtered." + Math.floor(Math.random() * 2000) + ".jpg";
+            // const photo1 = photo.getBuffer('MIME_JPEG', (error, img) => {
+          //   if (error) reject(error);
+          //   else resolve(img);
+          // });
+          await photo
+            .resize(256, 256) // resize
+            .quality(60) // set JPEG quality
+            .greyscale() // set greyscale
+            .write(__dirname + outpath, (img) => {
+
+              resolve(__dirname + outpath);
+            });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    })
 }
 
 // deleteLocalFiles
