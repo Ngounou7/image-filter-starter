@@ -15,7 +15,7 @@ export async function filterImageFromURL(inputURL: string): Promise<string> {
     url: inputURL,
     responseType: 'arraybuffer'
     })
-    .then(function ({data: imageBuffer}) {
+    .then(function ({data: imageBuffer} : {data: string} ) {
       // return jimp.read(imageBuffer)
       return new Promise(async (resolve, reject) => {
         try {
