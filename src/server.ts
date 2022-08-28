@@ -31,7 +31,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
 
   app.get( "/filteredimage", async ( req : Request, res : Response ) => {
-    let url = req.query.image_url;
+    let url : string = req.query.image_url;
     if (!url || !(/\.(jpg|jpeg|png|bmp|tiff|gif)$/.test(url))) {
       return res.status(404).send("Image url is wrong or does not exist");
     }else {
